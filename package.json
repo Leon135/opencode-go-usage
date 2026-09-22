@@ -1,11 +1,11 @@
 {
   "name": "@leon135/opencode-go-usage",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "OpenCode V2 TUI plugin showing opencode-go (Zen) usage limits in the sidebar and prompt footer",
   "type": "module",
   "author": "leon135",
   "license": "MIT",
-  "main": "./src/index.ts",
+  "main": "./dist/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/leon135/opencode-go-usage.git"
@@ -18,16 +18,16 @@
     "access": "public"
   },
   "exports": {
-    ".": "./src/index.ts",
-    "./server": "./src/index.ts",
-    "./tui": "./src/tui.tsx"
+    ".": "./dist/index.js",
+    "./server": "./dist/index.js",
+    "./tui": "./dist/tui.js"
   },
   "files": [
-    "src",
-    "index.ts",
-    "tui.tsx"
+    "dist"
   ],
   "scripts": {
+    "build": "bun run build.ts",
+    "prepublishOnly": "bun run build.ts",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -36,7 +36,7 @@
   "devDependencies": {
     "@opencode/theme": "2.0.12",
     "@opentui/core": "^0.5.8",
-    "@opentui/solid": "^0.5.8",
+    "@opentui/solid": "0.5.12",
     "@types/node": "^24",
     "solid-js": "^1.9.0",
     "typescript": "^5.8.2"
