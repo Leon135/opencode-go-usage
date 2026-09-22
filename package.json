@@ -6,6 +6,17 @@
   "author": "leon135",
   "license": "MIT",
   "main": "./src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/leon135/opencode-go-usage.git"
+  },
+  "bugs": {
+    "url": "https://github.com/leon135/opencode-go-usage/issues"
+  },
+  "homepage": "https://github.com/leon135/opencode-go-usage#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "exports": {
     ".": "./src/index.ts",
     "./server": "./src/index.ts",
