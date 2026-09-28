@@ -24,7 +24,7 @@ type FetchState =
   | { kind: "ready"; usage: GoUsage }
   | { kind: "error"; message: string }
 
-type ThemeTokens = {
+export type ThemeTokens = {
   text: RGBA
   textMuted: RGBA
   error: RGBA
@@ -32,6 +32,8 @@ type ThemeTokens = {
   success: RGBA
   accent: RGBA
 }
+
+export type { UsageWindow }
 
 type SessionMessageLike = {
   type?: string
@@ -48,13 +50,18 @@ const OK_AT = 50
 const WARN_AT = 75
 const DANGER_AT = 90
 const GAUGE_WIDTH = 7
-const SIDEBAR_GAUGE_WIDTH = 16
+const SIDEBAR_GAUGE_WIDTH = 14
+const SIDEBAR_LABEL_WIDTH = 3
+const SIDEBAR_PERCENT_WIDTH = 5
+const SIDEBAR_RESET_WIDTH = 6
+export const SIDEBAR_ROW_WIDTH =
+  SIDEBAR_LABEL_WIDTH + SIDEBAR_GAUGE_WIDTH + SIDEBAR_PERCENT_WIDTH + SIDEBAR_RESET_WIDTH
 const EIGHTHS = ["", "▏", "▎", "▍", "▌", "▋", "▊", "▉"]
 
 const WINDOWS: ReadonlyArray<{ key: WindowKey; label: string; short: string }> = [
   { key: "rolling", label: "5h", short: "5h" },
-  { key: "weekly", label: "week", short: "7d" },
-  { key: "monthly", label: "month", short: "30d" },
+  { key: "weekly", label: "week", short: "wk" },
+  { key: "monthly", label: "month", short: "mo" },
 ]
 
 const REFRESH_EVENTS: ReadonlySet<string> = new Set([
@@ -285,17 +292,28 @@ function createUsagePolling(context: Plugin.Context, sessionID: string, enabled:
 
 // --- views ---
 
-function UsageGauge(props: { label: string; window: UsageWindow | undefined; theme: ThemeTokens }) {
+export function UsageGauge(props: { label: string; window: UsageWindow | undefined; theme: ThemeTokens }) {
   const bar = () => gauge(props.window ? props.window.percent / 100 : 0, SIDEBAR_GAUGE_WIDTH)
   const color = () => (props.window ? levelColor(props.window, props.theme) : props.theme.textMuted)
+  const percent = () => (props.window ? percentLabel(props.window.percent) : "--")
   const reset = () => (props.window ? shortReset(props.window.resetsAt) : "")
   return (
-    <box flexDirection="row">
-      <text fg={props.theme.textMuted}>{props.label.padEnd(4)}</text>
-      <text fg={color()}>{bar().fill}</text>
-      <text fg={props.theme.textMuted}>{bar().track}</text>
-      <text fg={color()}>{` ${props.window ? percentLabel(props.window.percent) : "--"}`}</text>
-      <text fg={props.theme.textMuted}>{reset() ? ` · ${reset()}` : ""}</text>
+    <box flexDirection="row" width={SIDEBAR_ROW_WIDTH} flexShrink={0} overflow="hidden">
+      <text fg={props.theme.textMuted} width={SIDEBAR_LABEL_WIDTH} flexShrink={0}>
+        {props.label.padEnd(SIDEBAR_LABEL_WIDTH)}
+      </text>
+      <text fg={color()} width={bar().fill.length} flexShrink={0}>
+        {bar().fill}
+      </text>
+      <text fg={props.theme.textMuted} width={bar().track.length} flexShrink={0}>
+        {bar().track}
+      </text>
+      <text fg={color()} width={SIDEBAR_PERCENT_WIDTH} flexShrink={0}>
+        {percent().padStart(SIDEBAR_PERCENT_WIDTH)}
+      </text>
+      <text fg={props.theme.textMuted} width={SIDEBAR_RESET_WIDTH} flexShrink={0}>
+        {(reset() ? ` · ${reset()}` : "").padEnd(SIDEBAR_RESET_WIDTH)}
+      </text>
     </box>
   )
 }

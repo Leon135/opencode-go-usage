@@ -1,6 +1,6 @@
 {
   "name": "@leon135/opencode-go-usage",
-  "version": "0.1.1",
+  "version": "0.1.3",
   "description": "OpenCode V2 TUI plugin showing opencode-go (Zen) usage limits in the sidebar and prompt footer",
   "type": "module",
   "author": "leon135",
@@ -28,6 +28,7 @@
   "scripts": {
     "build": "bun run build.ts",
     "prepublishOnly": "bun run build.ts",
+    "test": "bun test",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
